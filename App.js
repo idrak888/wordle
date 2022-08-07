@@ -80,8 +80,8 @@ export default function App() {
 			<>
 			<StatusBar barStyle={"light-content"} backgroundColor={"#1C2420"}/>
 				<View style={styles.container}>
-					<View style={{flex: 1, width: "100%", padding: 20, justifyContent: "center", alignItems: "center"}}>
-						<Text style={{color: "#17D56B", fontWeight: "bold", fontSize: 24, alignSelf: "flex-start"}}>Wordle</Text>
+					<View style={{flex: 1, width: "100%", padding: 10, justifyContent: "center", alignItems: "center"}}>
+						<Text style={{color: "#17D56B", fontWeight: "bold", fontSize: 24, alignSelf: "flex-start", marginLeft: 10}}>Wordle</Text>
 						<Grid wordNumber={wordNumber} wordPalletes={wordPalletes} passRowData={rowData => {
 							if (rowData) {
 								setRowData(rowData);

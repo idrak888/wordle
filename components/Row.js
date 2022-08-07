@@ -1,103 +1,40 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import Box from './Box';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
 
 export default function Row(props) {
-	const [charIndex, setCharIndex] = React.useState(0);
-	const [nextChar, setNextChar] = React.useState({index: null, nextChar: null});
-	const [word, setWord] = React.useState([]);
+	const [keyboardActive, setKeyboard] = useState(true);
+	const [activeIndex, setActiveIndex] = useState(null);
+	const [word, setWord] = useState([]);
+	const textField = useRef();
 
 	return (
 		<View style={styles.row}>
-			<Box 
-				color={props.wordPallete ? props.wordPallete[0] : null}
-				previousInput={() => {
-					setCharIndex(0);
-					setWord([]);
-				}} 
-				nextInput={char => {
-					setCharIndex(1);
-					setWord([...word, char]);
-				}} 
-				passNextChar={char => {
-					setNextChar({index: 1, char});
-					setCharIndex(1);
-					setWord([...word, char]);
-				}}
-				isActive={charIndex == 0 && props.active ? true : false}
-				receiveNextChar={nextChar.index == 0 ? nextChar : null}
-			/>
-			<Box 
-				color={props.wordPallete ? props.wordPallete[1] : null}
-				previousInput={() => {
-					setCharIndex(0);
-					setWord([...word].slice(0, word.length - 1));
-				}} 
-				nextInput={char => {
-					setCharIndex(2);
-					setWord([...word, char]);
-				}} 
-				passNextChar={char => {
-					setNextChar({index: 2, char});
-					setCharIndex(2);
-					setWord([...word, char]);
-				}}
-				isActive={charIndex == 1 && props.active ? true : false}
-				receiveNextChar={nextChar.index == 1 ? nextChar : null}
-			/>
-			<Box 
-				color={props.wordPallete ? props.wordPallete[2] : null}
-				previousInput={() => {
-					setCharIndex(1);
-					setWord([...word].slice(0, word.length - 1));
-				}} 
-				nextInput={char => {
-					setCharIndex(3);
-					setWord([...word, char]);
-				}} 
-				passNextChar={char => {
-					setNextChar({index: 3, char});
-					setCharIndex(3);
-					setWord([...word, char]);
-				}}
-				isActive={charIndex == 2 && props.active ? true : false}
-				receiveNextChar={nextChar.index == 2 ? nextChar : null}
-			/>
-			<Box 
-				color={props.wordPallete ? props.wordPallete[3] : null}
-				previousInput={() => {
-					setCharIndex(2);
-					setWord([...word].slice(0, word.length - 1));
-				}} 
-				nextInput={char => {
-					setCharIndex(4);
-					setWord([...word, char]);
-				}} 
-				passNextChar={char => {
-					setNextChar({index: 4, char});
-					setCharIndex(4);
-					setWord([...word, char]);
-				}}
-				isActive={charIndex == 3 && props.active ? true : false}
-				receiveNextChar={nextChar.index == 3 ? nextChar : null}
-			/>
-			<Box  
-				color={props.wordPallete ? props.wordPallete[4] : null}
-				previousInput={() => {
-					setCharIndex(3);
-					setWord([...word].slice(0, word.length - 1));
-					props.passRowData({rowIndex: props.rowIndex, word: [...word].slice(0, word.length - 1).join("")});
-				}} 
-				nextInput={char => {
-					setWord([...word, char]);
-					props.passRowData({rowIndex: props.rowIndex, word: [...word, char].join("")});
-				}}
-				passNextChar={char => {}}
-				isActive={charIndex == 4 && props.active ? true : false}
-				receiveNextChar={nextChar.index == 4 ? nextChar : null}
-			/>
+			<TextInput ref={textField} onChangeText={text => {
+				setWord(text.split(""));
+				setActiveIndex(activeIndex + 1);
+			}} style={styles.input} blurOnSubmit={false} keyboardAppearance='dark' autoCapitalize="characters" returnKeyType="next" maxLength={5}/>
+			<View style={styles.row}>
+				<TouchableOpacity onPress={() => { 
+					textField.current.focus();
+					setActiveIndex(0);
+				}} style={[styles.box, activeIndex == 0 ? styles.active : {}]}>
+					<Text style={styles.text}>{word[0] ? word[0] : ""}</Text>
+				</TouchableOpacity>
+				<TouchableOpacity style={[styles.box, activeIndex == 1 ? styles.active : {}]}>
+					<Text style={styles.text}>{word[1] ? word[1] : ""}</Text>
+				</TouchableOpacity>
+				<TouchableOpacity style={[styles.box, activeIndex == 2 ? styles.active : {}]}>
+					<Text style={styles.text}>{word[2] ? word[2] : ""}</Text>
+				</TouchableOpacity>
+				<TouchableOpacity style={[styles.box, activeIndex == 3 ? styles.active : {}]}>
+					<Text style={styles.text}>{word[3] ? word[3] : ""}</Text>
+				</TouchableOpacity>
+				<TouchableOpacity style={[styles.box, activeIndex == 4 ? styles.active : {}]}>
+					<Text style={styles.text}>{word[4] ? word[4] : ""}</Text>
+				</TouchableOpacity>
+			</View>
 		</View>
-	)
+	)	
 }
 
 const styles = StyleSheet.create({
@@ -105,5 +42,28 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		flexDirection: "row"
+	},
+	input: {
+		width: 0,
+		height: 0,
+		opacity: 0
+	},
+	box: {
+		flex: 1,
+		borderColor: "grey",
+		borderWidth: 2,
+		margin: 5,
+		justifyContent: "center",
+		alignItems: "center",
+		borderRadius: 5
+	},
+	active: {
+		borderColor: "#17D56B"
+	},
+	text: {
+		padding: 10,
+		color: "white",
+		fontSize: 24,
+		fontWeight: "bold"
 	}
 });
